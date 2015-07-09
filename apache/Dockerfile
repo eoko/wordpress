@@ -26,13 +26,7 @@ RUN curl -o wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_UPS
 RUN curl -o /bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN chmod +x /bin/wp
 
-RUN wp db drop --yes --allow-root
-RUN wp db create --allow-root
-
-
 COPY docker-entrypoint.sh /entrypoint.sh
-
-RUN cat > ~/.wp-cli << "coucou"
 
 # grr, ENTRYPOINT resets CMD now
 ENTRYPOINT ["/entrypoint.sh"]
