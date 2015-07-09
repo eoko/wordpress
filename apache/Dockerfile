@@ -2,10 +2,11 @@ FROM php:5.6-apache
 
 RUN a2enmod rewrite
 
-# install the PHP extensions we need
-RUN apt-get update && apt-get install -y libpng12-dev libjpeg-dev && rm -rf /var/lib/apt/lists/* \
+# install the PHP extensions we need and mysql client
+RUN apt-get update && apt-get install -y libpng12-dev libjpeg-dev mysql-client && rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-install gd
+
 RUN docker-php-ext-install mysqli
 
 VOLUME /var/www/html
@@ -25,7 +26,13 @@ RUN curl -o wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_UPS
 RUN curl -o /bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN chmod +x /bin/wp
 
+RUN wp db drop --yes --allow-root
+RUN wp db create --allow-root
+
+
 COPY docker-entrypoint.sh /entrypoint.sh
+
+RUN cat > ~/.wp-cli << "coucou"
 
 # grr, ENTRYPOINT resets CMD now
 ENTRYPOINT ["/entrypoint.sh"]
